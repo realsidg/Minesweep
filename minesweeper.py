@@ -143,9 +143,9 @@ def parseinput(inputstring, gridsize, helpmessage, currgrid, minesleft):
 
 
 def main():
-    gridsize = 9
-    numberofmines = 10
-
+    gridsize = 12
+    numberofmines = 20
+    autosolve=False
     currgrid = [[' ' for i in range(gridsize)] for i in range(gridsize)]
 
     grid = []
@@ -157,11 +157,17 @@ def main():
 
     showgrid(currgrid)
     print(helpmessage + " Type 'help' to show this message again.\n")
-
+    prompt=""
     while True:
         minesleft = numberofmines - len(flags)
-        prompt = input('Enter the cell ({} mines left): '.format(minesleft))
         
+        if not autosolve:
+            prompt = input('Enter the cell ({} mines left): '.format(minesleft))
+        
+        if prompt == "auto":
+            autosolve= True
+            prompt="hint"
+
         result = parseinput(prompt, gridsize, helpmessage + '\n', currgrid, minesleft)
 
         message = result['message']
