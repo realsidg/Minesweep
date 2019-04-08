@@ -4,6 +4,8 @@ import re
 import time
 from string import ascii_lowercase
 import solver
+import os
+import time
 
 
 def setupgrid(gridsize, start, numberofmines):
@@ -19,7 +21,9 @@ def setupgrid(gridsize, start, numberofmines):
     return (grid, mines)
 
 
-def showgrid(grid):
+def showgrid(grid,move):
+    if move != '':
+        print(f"Move made: {move}")
     gridsize = len(grid)
 
     horizontal = '   ' + (4 * gridsize * '-') + '-'
@@ -123,7 +127,7 @@ def parseinput(inputstring, gridsize, helpmessage, currgrid, minesleft):
 
     if inputstring == "hint":
         inputstring= solver.hint(currgrid, minesleft)
-
+    
     pattern = r'([a-{}])([0-9]+)(f?)'.format(ascii_lowercase[gridsize - 1])
     validinput = re.match(pattern, inputstring)
 
@@ -139,12 +143,13 @@ def parseinput(inputstring, gridsize, helpmessage, currgrid, minesleft):
             cell = (rowno, colno)
             message = ''
 
-    return {'cell': cell, 'flag': flag, 'message': message}
+    return {'cell': cell, 'flag': flag, 'message': message,'move':inputstring}
 
 
 def main():
-    gridsize = 12
-    numberofmines = 20
+    os.system('cls' if os.name == 'nt' else 'clear')
+    gridsize = 10
+    numberofmines = 10
     autosolve=False
     currgrid = [[' ' for i in range(gridsize)] for i in range(gridsize)]
 
@@ -153,9 +158,10 @@ def main():
     starttime = 0
 
     helpmessage = ("Type the column followed by the row (eg. a5). "
-                   "To put or remove a flag, add 'f' to the cell (eg. a5f).")
+                   "To put or remove a flag, add 'f' to the cell (eg. a5f)."
+                   "For help type 'hint' or to automaticaly solve type 'auto'")
 
-    showgrid(currgrid)
+    showgrid(currgrid,"")
     print(helpmessage + " Type 'help' to show this message again.\n")
     prompt=""
     while True:
@@ -163,7 +169,9 @@ def main():
         
         if not autosolve:
             prompt = input('Enter the cell ({} mines left): '.format(minesleft))
-        
+        # else:
+        #     time.sleep(0.2)
+
         if prompt == "auto":
             autosolve= True
             prompt="hint"
@@ -172,6 +180,7 @@ def main():
 
         message = result['message']
         cell = result['cell']
+        os.system('cls' if os.name == 'nt' else 'clear')
 
         if cell:
             print('\n\n')
@@ -202,7 +211,7 @@ def main():
 
             elif grid[rowno][colno] == 'X':
                 print('Game Over\n')
-                showgrid(grid)
+                showgrid(grid,"")
                 if playagain():
                     main()
                 return
@@ -219,12 +228,12 @@ def main():
                     'You Win. '
                     'It took you {} minutes and {} seconds.\n'.format(minutes,
                                                                       seconds))
-                showgrid(grid)
+                showgrid(grid,result['move'])
                 if playagain():
                     main()
                 return
 
-        showgrid(currgrid)
+        showgrid(currgrid,result['move'])
         print(message)
 
 if __name__=="__main__":
