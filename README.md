@@ -1,2 +1,2 @@
 # Minesweep
-Command line minesweeper game and solving algorithm
+Command line minesweeper game and solving algorithm.
